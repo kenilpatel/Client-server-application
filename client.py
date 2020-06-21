@@ -14,7 +14,7 @@ class timer_display(threading.Thread):
 			if(timer>0):
 				while(timer>=0):
 					print(timer)
-					if(timer==2):
+					if(timer==4):
 						timer=0
 					timer=timer-1
 					time.sleep(1) 
@@ -58,11 +58,12 @@ class myThread(threading.Thread):
 						timer=int(t)
 						t=int(t)
 						# print("Gonna wait for ",t) 
-						wt=0
+						waiting=0 
 						while timer>=0:
+							waiting=waiting+1
 							time.sleep(1) 
-							wt=wt+1 
-						d = "Waited for "+str(wr)+" seconds" 
+						print("waited this time")
+						d = "Waited for "+str(waiting)+" seconds" 
 						data = pickle.dumps(d)
 						self.s.send(data)
 						self.conn=1 
