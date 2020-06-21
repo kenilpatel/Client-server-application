@@ -1,39 +1,61 @@
 import socket
 import pickle
 import threading
-class data(object):
-	def __init__(self,client=None,count=0):
-		self.client=client
-		self.count=-1
-		self.client=-1
+import re 
 clients=[]
+name=[]
+client_id=1
+time=6
 class myThread(threading.Thread):
-	def __init__(self,c,name):
+	def __init__(self,c,id):
 		threading.Thread.__init__(self)
 		self.c=c
-		self.name=name
-	def run(self):
+		self.id=id
+		self.n="" 
+		self.msg=100
+	def run(self): 
 		err=0  
-		clients.append(self.name)
-		print(clients)
+		clients.append(self.id) 
 		if(len(clients)==4):
-			clients.remove(self.name)
-			msg = 404
-			data = pickle.dumps(msg)
+			clients.remove(self.id)
+			self.msg = 404
+			data = pickle.dumps(self.msg)
 			self.c.send(data)   
 		else:
-			while (True): 
+			global time 
+			global client_id
+			while (True):   
 				try:
-					msg = 200
-					data = pickle.dumps(msg)
+					if(self.msg==100): 
+						self.msg=201  
+					elif(self.id==client_id):
+						self.msg="wait:"+str(time) 
+						client_id=99
+						time=60
+					else:
+						self.msg=200
+					data = pickle.dumps(self.msg)
 					self.c.send(data)
-					msg = pickle.loads(self.c.recv(1024))
-				except Exception as e:
-					err=1
-					print(self.name," disconnected") 
-					clients.remove(self.name) 
+					rdata = pickle.loads(self.c.recv(1024))
+					if(rdata!=200 and self.msg!=201):
+						display=self.n+" "+rdata
+						print(display)
+					if(self.msg==201): 
+						if(rdata in name):
+							self.msg=400
+							data = pickle.dumps(self.msg)
+							self.c.send(data)
+							raise("Name is already taken")
+						else: 
+							self.n=rdata 
+							name.append(self.n)
+							self.msg=200
+				except Exception as e: 
+					err=1 
+					clients.remove(self.id) 
+					if(self.n!=""):
+						name.remove(self.n)
 					break  
-					
 s=socket.socket()
 port=7398
 s.bind(('',port))
