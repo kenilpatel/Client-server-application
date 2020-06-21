@@ -16,8 +16,9 @@ while(True):
 		try:
 			msg=pickle.loads(s.recv(1024))
 			print(msg)
-			if(msg==-1):
-				print("server is full") 
+			if(msg==404):
+				print("server is full please try after some time") 
+				conn=0
 			msg = "client data"
 			data = pickle.dumps(msg)
 			s.send(data)

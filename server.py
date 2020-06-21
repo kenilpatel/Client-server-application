@@ -16,10 +16,15 @@ class myThread(threading.Thread):
 		err=0  
 		clients.append(self.name)
 		print(clients)
-		while (True):
-			if(len(clients)<=3):
+		if(len(clients)==4):
+			clients.remove(self.name)
+			msg = 404
+			data = pickle.dumps(msg)
+			self.c.send(data)   
+		else:
+			while (True): 
 				try:
-					msg = "server data"
+					msg = 200
 					data = pickle.dumps(msg)
 					self.c.send(data)
 					msg = pickle.loads(self.c.recv(1024))
@@ -27,13 +32,8 @@ class myThread(threading.Thread):
 					err=1
 					print(self.name," disconnected") 
 					clients.remove(self.name) 
-					break   
-			else: 
-				clients.remove(self.name)
-				msg = -1
-				data = pickle.dumps(msg)
-				self.c.send(data) 
-				break 
+					break  
+					
 s=socket.socket()
 port=7398
 s.bind(('',port))
@@ -42,6 +42,10 @@ flag=0
 count=0
 while(True):  
 	c, addr = s.accept()
-	count=count+1
+	if(len(clients)==0):
+		count=1
+	else:	
+		x=sorted(clients)
+		count=int(x[len(clients)-1])+1
 	t=myThread(c,count)
 	t.start() 
