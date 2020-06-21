@@ -12,10 +12,7 @@ class timer_display(threading.Thread):
 		global timer
 		while(True):
 			if(timer>0):
-				while(timer>=0):
-					print(timer)
-					if(timer==4):
-						timer=0
+				while(timer>=0):  
 					timer=timer-1
 					time.sleep(1) 
 				timer=0 
@@ -44,7 +41,7 @@ class myThread(threading.Thread):
 						print("server is full please try after some time") 
 						self.conn=0
 					elif(msg==201):
-						d = input("Enter your name")
+						d = input("Enter your name:")
 						data = pickle.dumps(d)
 						self.s.send(data)
 						self.conn=1
@@ -60,7 +57,10 @@ class myThread(threading.Thread):
 						# print("Gonna wait for ",t) 
 						waiting=0 
 						while timer>=0:
+							print(waiting)
 							waiting=waiting+1
+							if(waiting==t):
+								break
 							time.sleep(1) 
 						print("waited this time")
 						d = "Waited for "+str(waiting)+" seconds" 
@@ -73,7 +73,7 @@ class myThread(threading.Thread):
 						self.s.send(data) 
 						self.conn=1
 				except Exception as e:  
-					# print(e)
+					print(e)
 					self.conn=0
 t=myThread()
 t.start()
