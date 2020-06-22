@@ -72,7 +72,8 @@ class myThread(threading.Thread):
 							self.msg=200
 				except Exception as e: 
 					err=1 
-					print(self.n," disconnected")
+					if(self.n!=""):
+						print(self.n," disconnected")
 					clients.remove(self.id) 
 					if(self.n!=""):
 						name.remove(self.n)
