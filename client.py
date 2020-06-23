@@ -60,12 +60,14 @@ class myThread(threading.Thread):
                         self.s.send(data)
                         self.conn=1
                     elif(msg==400):  
+                        self.status=""
                         self.name=""
                         self.conn=0 
                         self.code=400
                     elif(re.search("^wait:*",str(msg))!=None): 
                         x,t=msg.split(":")
                         global timer
+                        self.status="Connected"
                         timer=int(t)
                         t=int(t) 
                         waiting=0 
@@ -80,7 +82,6 @@ class myThread(threading.Thread):
                         data = pickle.dumps(d)
                         self.s.send(data)
                         self.conn=1 
-                        self.status="Connected"
                     elif(msg==200):
                         d=200
                         data = pickle.dumps(d)
